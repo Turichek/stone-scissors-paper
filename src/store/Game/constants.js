@@ -1,0 +1,7 @@
+export const SET_POINT_HUMAN = 'SET_POINT_HUMAN';
+export const SET_POINT_COMPUTER = 'SET_POINT_COMPUTER';
+export const SET_ID = 'SET_ID';
+export const SET_WINNER = 'SET_WINNER';
+export const SET_POINT_FOR_WIN = 'SET_POINT_FOR_WIN';
+export const SET_DIFFICUTLY_LEVEL = 'SET_DIFFICUTLY_LEVEL';
+export const SET_START = 'SET_START';
