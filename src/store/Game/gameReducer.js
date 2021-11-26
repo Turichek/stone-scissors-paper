@@ -1,11 +1,11 @@
-import { SET_ID, SET_POINT_COMPUTER, SET_POINT_HUMAN, SET_WINNER, SET_POINT_FOR_WIN, SET_DIFFICUTLY_LEVEL, SET_START } from "./constants"
+import { SET_ID, SET_POINT_COMPUTER, SET_POINT_HUMAN, SET_WINNER, SET_POINT_FOR_WIN, SET_DIFFICUTLY_LEVEL, SET_START, UPDATE_GAME } from "./constants"
 
 const defaulteState = {
     id: Date.now(),
     difficultyLevel: '',
     pointForWin: 0,
     pointComputer: 0,
-    pointHuman: 0,
+    pointUser: 0,
     isStart: false,
     winner: '',
 }
@@ -19,7 +19,7 @@ export const gameReducer = (state = defaulteState, action) => {
             return { ...state, pointComputer: action.payload }
 
         case SET_POINT_HUMAN:
-            return { ...state, pointHuman: action.payload }
+            return { ...state, pointUser: action.payload }
 
         case SET_WINNER:
             return { ...state, winner: action.payload }
@@ -32,6 +32,10 @@ export const gameReducer = (state = defaulteState, action) => {
 
         case SET_START:
             return { ...state, isStart: action.payload }
+
+        case UPDATE_GAME:{
+                return { ...state, ...defaulteState }
+            }
 
         default:
             return state;

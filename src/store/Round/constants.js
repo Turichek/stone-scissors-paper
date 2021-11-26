@@ -1,0 +1,3 @@
+export const SET_CARDUSER = 'SET_CARDUSER';
+export const SET_CARDCOMPUTER = 'SET_CARDCOMPUTER';
+export const SET_NEXTROUND = 'SET_NEXTROUND';

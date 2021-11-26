@@ -5,6 +5,7 @@ import { setDifficultyLevelAction } from "../../store/Game/actions";
 
 export default function SelectLevel() {
     const level = useSelector(state => state.game.difficultyLevel);
+    const isStart = useSelector(state => state.game.isStart);
     const dispatch = useDispatch();
 
     const handleChange = (event) => {
@@ -21,6 +22,7 @@ export default function SelectLevel() {
                     value={level}
                     onChange={handleChange}
                     label={'Выберете уровень сложности'}
+                    disabled={isStart}
                 >
                     <MenuItem value={'easy'}>Легкий</MenuItem>
                     <MenuItem value={'middle'}>Средний</MenuItem>

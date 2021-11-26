@@ -5,3 +5,4 @@ export const SET_WINNER = 'SET_WINNER';
 export const SET_POINT_FOR_WIN = 'SET_POINT_FOR_WIN';
 export const SET_DIFFICUTLY_LEVEL = 'SET_DIFFICUTLY_LEVEL';
 export const SET_START = 'SET_START';
+export const UPDATE_GAME = 'UPDATE_GAME';
