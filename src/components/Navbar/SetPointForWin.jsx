@@ -9,8 +9,9 @@ export default function SetPointForWin() {
     const dispatch = useDispatch();
 
     const handleChange = (event) => {
-        
-        dispatch(setPointForWinAction(Number.parseInt(event.target.value)));
+        if(Number.parseInt(event.target.value) >= 0)
+            dispatch(setPointForWinAction(Number.parseInt(event.target.value)));
+        else event.target.value = 0;
     };
 
     return (
@@ -20,6 +21,7 @@ export default function SetPointForWin() {
                 onChange={handleChange}
                 value={pointForWin}
                 label={'Выберете кол-во очков для победы'}
+                
             />
         </Box>
     )

@@ -27,7 +27,7 @@ export default function Computer({ point }) {
             flexDirection: 'column',
             justifyContent: 'space-between'
         }}>
-            <Typography sx={{ textAlign: 'center' }} variant='subtitle1'>Computer point: {point}</Typography>
+            <Typography sx={{ textAlign: 'center' }} variant='subtitle1'>Очки компьютера: {point}</Typography>
             <Box sx={{
                 width: 1,
                 height: 0.97,

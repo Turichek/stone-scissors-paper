@@ -2,75 +2,46 @@ import { STONE, SCISSORS, PAPER } from "../../constatns/Srcs";
 import { setCardComputerAction, setNextRoundAction } from "../../store/Round/actions";
 import { openCloseAlertAction } from "../../store/Alert/actions";
 import { setPointComputerAction, setPointUserAction, setUpdateGameAction } from "../../store/Game/actions";
-
-const cards = [STONE, SCISSORS, PAPER];
+import { addElemAction } from "../../store/History/actions";
 
 export const SelectComputerCard = (game, cardUser, dispatch) => {
-    const randomPercent = getRandomInt(0, 100);
-    if (game.difficultyLevel === 'easy') {
-        dispatch(setCardComputerAction(cards[getRandomInt(0, 2)]));
-    }
-    else if (game.difficultyLevel === 'middle') {
-        if (randomPercent >= 0 && randomPercent < 30) {
-            dispatch(setCardComputerAction(returnCard(cardUser, 'equals')));
-        }
-        else if (randomPercent >= 30 && randomPercent < 60) {
-            dispatch(setCardComputerAction(returnCard(cardUser, 'smaller')));
-        }
-        else if (randomPercent >= 60 && randomPercent <= 100) {
-            dispatch(setCardComputerAction(returnCard(cardUser, 'more')));
-        }
-    }
-    else if (game.difficultyLevel === 'difficult') {
-        if (randomPercent >= 0 && randomPercent < 20) {
-            dispatch(setCardComputerAction(returnCard(cardUser, 'equals')));
-        }
-        else if (randomPercent >= 20 && randomPercent < 40) {
-            dispatch(setCardComputerAction(returnCard(cardUser, 'smaller')));
-        }
-        else if (randomPercent >= 40 && randomPercent <= 100) {
-            dispatch(setCardComputerAction(returnCard(cardUser, 'more')));
-        }
+    let cards;
+
+    switch (game.difficultyLevel) {
+        case 'easy':
+            cards = [STONE, SCISSORS, PAPER];
+            dispatch(setCardComputerAction(cards[Random(0, cards.length-1)]));
+            break;
+
+        case 'middle':
+            cards = [STONE, SCISSORS, PAPER, STONE, SCISSORS, PAPER, STONE, SCISSORS, PAPER];
+            cards.push(returnStrongerCard(cardUser));
+            dispatch(setCardComputerAction(cards[Random(0, cards.length-1)]));
+            break;
+
+        case 'difficult':
+            cards = [STONE, SCISSORS, PAPER];
+            for(let i = 0;i < 2;i++){
+                cards.push(returnStrongerCard(cardUser));
+            }
+            dispatch(setCardComputerAction(cards[Random(0, cards.length-1)]));
+            break;
+
+        default:
+            break;
     }
 }
 
-const returnCard = (userCard, mode) => {
+const returnStrongerCard = (userCard) => {
     switch (userCard.name) {
-        case 'stone':
-            if (mode === 'more') {
-                return cards[2];
-            }
-            else if (mode === 'smaller') {
-                return cards[1];
-            }
-            else if (mode === 'equals') {
-                return cards[0];
-            }
-            break;
+        case 'scissors':
+            return STONE;
 
         case 'paper':
-            if (mode === 'more') {
-                return cards[1];
-            }
-            else if (mode === 'smaller') {
-                return cards[0];
-            }
-            else if (mode === 'equals') {
-                return cards[2];
-            }
-            break;
+            return SCISSORS;
 
-        case 'scissors':
-            if (mode === 'more') {
-                return cards[0];
-            }
-            else if (mode === 'smaller') {
-                return cards[2];
-            }
-            else if (mode === 'equals') {
-                return cards[1];
-            }
-            break;
+        case 'stone':
+            return PAPER;
 
         default:
             break;
@@ -80,44 +51,65 @@ const returnCard = (userCard, mode) => {
 export const DefineWinnerRound = (round, game, dispatch) => {
     switch (round.cardUser.name) {
         case 'stone':
-            if (round.cardComputer.name === 'stone') {
-                dispatch(openCloseAlertAction({ open: true, text: 'Результат: ничья', severity: 'info' }));
-            }
-            else if (round.cardComputer.name === 'paper') {
-                dispatch(setPointComputerAction(game.pointComputer + 1));
-                dispatch(openCloseAlertAction({ open: true, text: 'Результат: компьютер победил!', severity: 'error' }));
-            }
-            else if (round.cardComputer.name === 'scissors') {
-                dispatch(setPointUserAction(game.pointUser + 1));
-                dispatch(openCloseAlertAction({ open: true, text: 'Результат: вы победили!', severity: 'success' }));
+            switch (round.cardComputer.name) {
+                case 'stone':
+                    dispatch(openCloseAlertAction({ open: true, text: 'Результат: ничья', severity: 'info' }));
+                    break;
+
+                case 'paper':
+                    dispatch(setPointComputerAction(game.pointComputer + 1));
+                    dispatch(openCloseAlertAction({ open: true, text: 'Результат: компьютер победил!', severity: 'error' }));
+                    break;
+
+                case 'scissors':
+                    dispatch(setPointUserAction(game.pointUser + 1));
+                    dispatch(openCloseAlertAction({ open: true, text: 'Результат: вы победили!', severity: 'success' }));
+                    break;
+
+                default:
+                    break;
             }
             break;
 
         case 'paper':
-            if (round.cardComputer.name === 'paper') {
-                dispatch(openCloseAlertAction({ open: true, text: 'Результат: ничья', severity: 'info' }));
-            }
-            else if (round.cardComputer.name === 'scissors') {
-                dispatch(setPointComputerAction(game.pointComputer + 1));
-                dispatch(openCloseAlertAction({ open: true, text: 'Результат: компьютер победил!', severity: 'error' }));
-            }
-            else if (round.cardComputer.name === 'stone') {
-                dispatch(setPointUserAction(game.pointUser + 1));
-                dispatch(openCloseAlertAction({ open: true, text: 'Результат: вы победили!', severity: 'success' }));
+            switch (round.cardComputer.name) {
+                case 'stone':
+                    dispatch(setPointUserAction(game.pointUser + 1));
+                    dispatch(openCloseAlertAction({ open: true, text: 'Результат: вы победили!', severity: 'success' }));
+                    break;
+
+                case 'paper':
+                    dispatch(openCloseAlertAction({ open: true, text: 'Результат: ничья', severity: 'info' }));
+                    break;
+
+                case 'scissors':
+                    dispatch(setPointComputerAction(game.pointComputer + 1));
+                    dispatch(openCloseAlertAction({ open: true, text: 'Результат: компьютер победил!', severity: 'error' }));
+                    break;
+
+                default:
+                    break;
             }
             break;
 
         case 'scissors':
-            if (round.cardComputer.name === 'scissors') {
-                dispatch(openCloseAlertAction({ open: true, text: 'Результат: ничья', severity: 'info' }));
-            }
-            else if (round.cardComputer.name === 'stone') {
-                dispatch(setPointComputerAction(game.pointComputer + 1));
-                dispatch(openCloseAlertAction({ open: true, text: 'Результат: компьютер победил!', severity: 'error' }));
-            }
-            else if (round.cardComputer.name === 'paper') {
-                dispatch(setPointUserAction(game.pointUser + 1));
-                dispatch(openCloseAlertAction({ open: true, text: 'Результат: вы победили!', severity: 'success' }));
+            switch (round.cardComputer.name) {
+                case 'stone':
+                    dispatch(setPointComputerAction(game.pointComputer + 1));
+                    dispatch(openCloseAlertAction({ open: true, text: 'Результат: компьютер победил!', severity: 'error' }));
+                    break;
+
+                case 'paper':
+                    dispatch(setPointUserAction(game.pointUser + 1));
+                    dispatch(openCloseAlertAction({ open: true, text: 'Результат: вы победили!', severity: 'success' }));
+                    break;
+
+                case 'scissors':
+                    dispatch(openCloseAlertAction({ open: true, text: 'Результат: ничья', severity: 'info' }));
+                    break;
+
+                default:
+                    break;
             }
             break;
 
@@ -134,17 +126,21 @@ export const isEnd = (game, dispatch) => {
     if (game.pointUser >= game.pointForWin) {
         dispatch(openCloseAlertAction({ open: true, text: 'Игра оконченна, вы выиграли!', severity: 'success' }));
         setTimeout(() => {
+            game.winner = 'User';
+            dispatch(addElemAction(game));
             dispatch(setUpdateGameAction())
         }, 5000);
     }
     else if (game.pointComputer >= game.pointForWin) {
         dispatch(openCloseAlertAction({ open: true, text: 'Игра оконченна, компьютер выиграл!', severity: 'error' }));
         setTimeout(() => {
+            game.winner = 'Computer';
+            dispatch(addElemAction(game));
             dispatch(setUpdateGameAction())
         }, 5000);
     }
 }
 
-function getRandomInt(min, max) {
+function Random(min, max) {
     return Math.round(Math.random() * (max - min) + min);
 }

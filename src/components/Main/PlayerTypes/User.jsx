@@ -27,7 +27,7 @@ export default function User({ point }) {
             flexDirection: 'column',
             justifyContent: 'space-between'
         }}>
-            <Typography sx={{ textAlign: 'center' }} variant='subtitle1'>User point: {point}</Typography>
+            <Typography sx={{ textAlign: 'center' }} variant='subtitle1'>Ваши очки: {point}</Typography>
             <Box sx={{
                 width: 1,
                 height: 0.97,
