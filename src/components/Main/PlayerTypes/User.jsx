@@ -11,10 +11,12 @@ export default function User({ point }) {
     const cards = [STONE, SCISSORS, PAPER];
     const dispatch = useDispatch();
     const cardUser = useSelector(state => state.round.cardUser);
+    const game = useSelector(state => state.game);
 
-    useEffect(()=>{
-        setTimeout(SelectComputerCard(dispatch),100);
-    },[cardUser])
+    useEffect(() => {
+        if (cardUser !== '')
+            setTimeout( SelectComputerCard(game, cardUser,dispatch), 100);
+    }, [cardUser])
 
     return (
         <Box sx={{

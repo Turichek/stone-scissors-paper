@@ -16,7 +16,7 @@ export default function Notification() {
     };
 
     return (
-        <Snackbar open={alert.open} autoHideDuration={3000} onClose={handleClose}>
+        <Snackbar open={alert.open} autoHideDuration={5000} onClose={handleClose}>
             <Alert onClose={handleClose} severity={alert.severity} variant='filled' sx={{ width: '100%' }}>
                 {alert.text}
             </Alert>

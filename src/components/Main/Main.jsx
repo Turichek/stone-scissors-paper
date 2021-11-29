@@ -6,19 +6,27 @@ import { yellow } from '@mui/material/colors';
 import { setStartAction } from '../../store/Game/actions';
 import { openCloseAlertAction } from '../../store/Alert/actions';
 import Notification from './Notification';
+import { useEffect } from 'react';
+import { isEnd } from '../helpers/toGame';
 
 export default function Main() {
     const game = useSelector(state => state.game);
     const dispatch = useDispatch();
 
     const changeIsStart = () => {
-        if(game.difficultyLevel !== '' && game.pointForWin >= 0){
+        if (game.difficultyLevel !== '' && game.pointForWin >= 0) {
             dispatch(setStartAction(true));
         }
-        else{
-            dispatch(openCloseAlertAction({open: true, text: 'Корректно заполните поля вверху', severity: 'error'}))
+        else {
+            dispatch(openCloseAlertAction({ open: true, text: 'Корректно заполните поля вверху', severity: 'error' }))
         }
     }
+
+    useEffect(() => {
+        if (game.pointForWin !== 0) {
+            isEnd(game, dispatch);
+        }
+    }, [game])
 
     return (
         <Box sx={{ display: 'flex', height: 0.915 }}>

@@ -5,8 +5,76 @@ import { setPointComputerAction, setPointUserAction, setUpdateGameAction } from 
 
 const cards = [STONE, SCISSORS, PAPER];
 
-export const SelectComputerCard = (dispatch) => {
-    dispatch(setCardComputerAction(cards[getRandomInt(3)]));
+export const SelectComputerCard = (game, cardUser, dispatch) => {
+    const randomPercent = getRandomInt(0, 100);
+    if (game.difficultyLevel === 'easy') {
+        dispatch(setCardComputerAction(cards[getRandomInt(0, 2)]));
+    }
+    else if (game.difficultyLevel === 'middle') {
+        if (randomPercent >= 0 && randomPercent < 30) {
+            dispatch(setCardComputerAction(returnCard(cardUser, 'equals')));
+        }
+        else if (randomPercent >= 30 && randomPercent < 60) {
+            dispatch(setCardComputerAction(returnCard(cardUser, 'smaller')));
+        }
+        else if (randomPercent >= 60 && randomPercent <= 100) {
+            dispatch(setCardComputerAction(returnCard(cardUser, 'more')));
+        }
+    }
+    else if (game.difficultyLevel === 'difficult') {
+        if (randomPercent >= 0 && randomPercent < 20) {
+            dispatch(setCardComputerAction(returnCard(cardUser, 'equals')));
+        }
+        else if (randomPercent >= 20 && randomPercent < 40) {
+            dispatch(setCardComputerAction(returnCard(cardUser, 'smaller')));
+        }
+        else if (randomPercent >= 40 && randomPercent <= 100) {
+            dispatch(setCardComputerAction(returnCard(cardUser, 'more')));
+        }
+    }
+}
+
+const returnCard = (userCard, mode) => {
+    switch (userCard.name) {
+        case 'stone':
+            if (mode === 'more') {
+                return cards[2];
+            }
+            else if (mode === 'smaller') {
+                return cards[1];
+            }
+            else if (mode === 'equals') {
+                return cards[0];
+            }
+            break;
+
+        case 'paper':
+            if (mode === 'more') {
+                return cards[1];
+            }
+            else if (mode === 'smaller') {
+                return cards[0];
+            }
+            else if (mode === 'equals') {
+                return cards[2];
+            }
+            break;
+
+        case 'scissors':
+            if (mode === 'more') {
+                return cards[0];
+            }
+            else if (mode === 'smaller') {
+                return cards[2];
+            }
+            else if (mode === 'equals') {
+                return cards[1];
+            }
+            break;
+
+        default:
+            break;
+    }
 }
 
 export const DefineWinnerRound = (round, game, dispatch) => {
@@ -59,16 +127,24 @@ export const DefineWinnerRound = (round, game, dispatch) => {
     setTimeout(() => {
         dispatch(setNextRoundAction({ cardUser: '', cardComputer: '' }))
         console.log('new round');
-    }, 3000)
+    }, 5000)
 }
 
-export const Restart = (game, dispatch) => {
-    
-    setTimeout(() => { 
-        dispatch(setUpdateGameAction()) 
-    }, 3000);
+export const isEnd = (game, dispatch) => {
+    if (game.pointUser >= game.pointForWin) {
+        dispatch(openCloseAlertAction({ open: true, text: 'Игра оконченна, вы выиграли!', severity: 'success' }));
+        setTimeout(() => {
+            dispatch(setUpdateGameAction())
+        }, 5000);
+    }
+    else if (game.pointComputer >= game.pointForWin) {
+        dispatch(openCloseAlertAction({ open: true, text: 'Игра оконченна, компьютер выиграл!', severity: 'error' }));
+        setTimeout(() => {
+            dispatch(setUpdateGameAction())
+        }, 5000);
+    }
 }
 
-function getRandomInt(max) {
-    return Math.floor(Math.random() * max);
+function getRandomInt(min, max) {
+    return Math.round(Math.random() * (max - min) + min);
 }
