@@ -1,6 +1,6 @@
 import { List, Grid, ListItem } from '@mui/material';
 import React from 'react';
-import History from './History';
+import OpenHistory from './OpenHistory';
 import SelectLevel from './SelectLevel';
 import SetPointForWin from './SetPointForWin';
 
@@ -15,7 +15,7 @@ export default function Navbar() {
                     <SetPointForWin />
                 </ListItem>
                 <ListItem sx={{ width: 0.2, p: 0, alignItems: 'center', justifyContent: 'center', display: 'flex' }}>
-                    <History />
+                    <OpenHistory />
                 </ListItem>
             </List>
         </Grid>

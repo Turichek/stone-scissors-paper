@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import React from "react";
 import { openCloseModalAction } from "../../store/Modal/actions";
 
-export default function History() {
+export default function OpenHistory() {
     const dispatch = useDispatch();
     const isStart = useSelector(state => state.game.isStart);
 

@@ -10,26 +10,30 @@ export const SelectComputerCard = (game, cardUser, dispatch) => {
     switch (game.difficultyLevel) {
         case 'easy':
             cards = [STONE, SCISSORS, PAPER];
-            dispatch(setCardComputerAction(cards[Random(0, cards.length-1)]));
+            setCardComputer(cards,dispatch);
             break;
 
         case 'middle':
             cards = [STONE, SCISSORS, PAPER, STONE, SCISSORS, PAPER, STONE, SCISSORS, PAPER];
             cards.push(returnStrongerCard(cardUser));
-            dispatch(setCardComputerAction(cards[Random(0, cards.length-1)]));
+            setCardComputer(cards,dispatch);
             break;
 
         case 'difficult':
             cards = [STONE, SCISSORS, PAPER];
-            for(let i = 0;i < 2;i++){
+            for (let i = 0; i < 2; i++) {
                 cards.push(returnStrongerCard(cardUser));
             }
-            dispatch(setCardComputerAction(cards[Random(0, cards.length-1)]));
+            setCardComputer(cards,dispatch);
             break;
 
         default:
             break;
     }
+}
+
+const setCardComputer = (cards, dispatch) => {
+    dispatch(setCardComputerAction(cards[Random(0, cards.length - 1)]));
 }
 
 const returnStrongerCard = (userCard) => {
@@ -49,72 +53,29 @@ const returnStrongerCard = (userCard) => {
 }
 
 export const DefineWinnerRound = (round, game, dispatch) => {
-    switch (round.cardUser.name) {
-        case 'stone':
-            switch (round.cardComputer.name) {
-                case 'stone':
-                    dispatch(openCloseAlertAction({ open: true, text: 'Результат: ничья', severity: 'info' }));
-                    break;
-
-                case 'paper':
-                    dispatch(setPointComputerAction(game.pointComputer + 1));
-                    dispatch(openCloseAlertAction({ open: true, text: 'Результат: компьютер победил!', severity: 'error' }));
-                    break;
-
-                case 'scissors':
-                    dispatch(setPointUserAction(game.pointUser + 1));
-                    dispatch(openCloseAlertAction({ open: true, text: 'Результат: вы победили!', severity: 'success' }));
-                    break;
-
-                default:
-                    break;
-            }
+    switch (round.cardComputer.name + ' ' + round.cardUser.name) {
+        case 'stone stone':
+        case 'paper paper':
+        case 'scissors scissors':
+            dispatch(openCloseAlertAction({ open: true, text: 'Результат: ничья', severity: 'info' }));
             break;
 
-        case 'paper':
-            switch (round.cardComputer.name) {
-                case 'stone':
-                    dispatch(setPointUserAction(game.pointUser + 1));
-                    dispatch(openCloseAlertAction({ open: true, text: 'Результат: вы победили!', severity: 'success' }));
-                    break;
-
-                case 'paper':
-                    dispatch(openCloseAlertAction({ open: true, text: 'Результат: ничья', severity: 'info' }));
-                    break;
-
-                case 'scissors':
-                    dispatch(setPointComputerAction(game.pointComputer + 1));
-                    dispatch(openCloseAlertAction({ open: true, text: 'Результат: компьютер победил!', severity: 'error' }));
-                    break;
-
-                default:
-                    break;
-            }
+        case 'stone paper':
+        case 'paper scissors':
+        case 'scissors stone':
+            dispatch(setPointUserAction(game.pointUser + 1));
+            dispatch(openCloseAlertAction({ open: true, text: 'Результат: вы победили!', severity: 'success' }));
             break;
 
-        case 'scissors':
-            switch (round.cardComputer.name) {
-                case 'stone':
-                    dispatch(setPointComputerAction(game.pointComputer + 1));
-                    dispatch(openCloseAlertAction({ open: true, text: 'Результат: компьютер победил!', severity: 'error' }));
-                    break;
-
-                case 'paper':
-                    dispatch(setPointUserAction(game.pointUser + 1));
-                    dispatch(openCloseAlertAction({ open: true, text: 'Результат: вы победили!', severity: 'success' }));
-                    break;
-
-                case 'scissors':
-                    dispatch(openCloseAlertAction({ open: true, text: 'Результат: ничья', severity: 'info' }));
-                    break;
-
-                default:
-                    break;
-            }
+        case 'paper stone':
+        case 'stone scissors':
+        case 'scissors paper':
+            dispatch(setPointComputerAction(game.pointComputer + 1));
+            dispatch(openCloseAlertAction({ open: true, text: 'Результат: компьютер победил!', severity: 'error' }));
             break;
 
         default:
-            return;
+            break;
     }
     setTimeout(() => {
         dispatch(setNextRoundAction({ cardUser: '', cardComputer: '' }))
